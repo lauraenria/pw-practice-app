@@ -21,6 +21,9 @@
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+.idea/
+*.swp
+*.swo
 
 # misc
 /.angular/cache
@@ -40,3 +43,17 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# Playwright output
+test-results/
+playwright-report/
+playwright/.cache/
+blob-report/
+trace.zip
+*.zip
+*.log
+
+
+# Environment variables
+.env
+.env.*

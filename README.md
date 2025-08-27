@@ -26,7 +26,7 @@ npm install --force
 npm start
 CTRL + C to stop the server
 ```
-⚠️ Keep this terminal window open and running to keep the application active.
+⚠️ Keep this terminal open and running to keep the application active.
 
 If you need to run other Git or npm commands, open a new terminal instead of stopping the server.
 
@@ -38,3 +38,19 @@ If you need to run other Git or npm commands, open a new terminal instead of sto
 Once the server is running, open your browser and go to:
 
 👉 [http://localhost:4200](http://localhost:4200)
+
+
+### Other terminal installation
+
+```bash
+npm init
+```
+
+### install playright
+
+```bash
+npm init playright@latest
+or
+npm install -D @playwright/test
+```
+choose typescript
