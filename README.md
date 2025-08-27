@@ -24,7 +24,11 @@ Install dependencies and start the application:
 ```bash
 npm install --force
 npm start
+CTRL + C to stop the server
 ```
+⚠️ Keep this terminal window open and running to keep the application active.
+
+If you need to run other Git or npm commands, open a new terminal instead of stopping the server.
 
 * `npm install --force` → installs all dependencies (forcing if there are conflicts).
 * `npm start` → starts the application.
