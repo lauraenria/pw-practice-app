@@ -3,40 +3,26 @@ import { test } from '@playwright/test'
 
 test.beforeEach(async ({ page }) => {
     await page.goto('http://localhost:4200/')
+    await page.getByText('Forms').click()
+    await page.getByText('Form Layouts').click()
 })
 
-test.describe('suite01', () => {
-
-    test.beforeEach(async ({ page }) => {
-        await page.getByText('Charts').click()
-    })
-
-
-    test('the first test', async ({ page }) => {
-        await page.getByText('Forms').click()
-        await page.getByText('Form Layouts').click()
-    })
-
-    test('navigate to Datepicker Page', async ({ page }) => {
-        await page.getByText('Datepicker').click()
-    })
-
-})
-
-
-test.describe('suite02', () => {
-
-    test.beforeEach(async ({ page }) => {
-        await page.getByText('Forms').click()
-    })
-
-    test('the first test', async ({ page }) => {
-        await page.getByText('Form Layouts').click()
-    })
-
-    test('navigate to Datepicker Page', async ({ page }) => {
-        await page.getByText('Datepicker').click()
-    })
-
+test('Locator syntax rules', async ({ page }) => {
+    //by Tag name (args: a string and a obj for different options)
+    page.locator("input")
+    //by ID
+    page.locator('#inputEmail1')
+    //by Class value
+    page.locator(".shape-rectangle")
+    //by attribute
+    page.locator('[placeholder="Email"]')
+    //by Class value (full)
+    page.locator('[class="input-full-width size-medium status-basic shape-rectangle nb-transition"]')
+    //combine different selectors
+    page.locator('input [placeholder="Email"] [nbinput]')
+    // by XPath (NOT RECOMMENDED) page.locator('//*[@id="inputEmail1"]')
+    // by partial text match page.locator(':text("Using")')
+    //by exact text match
+    page.locator(':text-is ("Using the Grid")')
 })
 
