@@ -22,7 +22,7 @@ cd <project-folder>
 Install dependencies and start the application:
 
 ```bash
-npm install --force
+npm init  playwright@latest --force
 npm start
 CTRL + C to stop the server
 ```
@@ -40,17 +40,38 @@ Once the server is running, open your browser and go to:
 👉 [http://localhost:4200](http://localhost:4200)
 
 
-### Other terminal installation
+
+###  playright commands
+
+Inside that directory, you can run several commands:
+
+  `npx playwright test`
+    Runs the end-to-end tests.
+
+  `npx playwright test --ui`
+    Starts the interactive UI mode.
+
+  `npx playwright test --project=chromium`
+    Runs the tests only on Desktop Chrome.
+
+  `npx playwright test example`
+    Runs the tests in a specific file.
+
+  `npx playwright test --debug`
+    Runs the tests in debug mode.
+
+  `npx playwright codegen`
+    Auto generate tests with Codegen.
+
+We suggest that you begin by typing:
 
 ```bash
-npm init
+    npx playwright test
 ```
 
-### install playright
+And check out the following files:
+  - .\tests\example.spec.ts - Example end-to-end test
+  - .\tests-examples\demo-todo-app.spec.ts - Demo Todo App end-to-end tests
+  - .\playwright.config.ts - Playwright Test configuration
 
-```bash
-npm init playright@latest
-or
-npm install -D @playwright/test
-```
-choose typescript
+Visit https://playwright.dev/docs/intro for more information. ✨
