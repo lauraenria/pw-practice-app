@@ -45,10 +45,12 @@ testem.log
 Thumbs.db
 
 # Playwright output
+node_modules/
 test-results/
 playwright-report/
 playwright/.cache/
 blob-report/
+/playwright/.cache/
 trace.zip
 *.zip
 *.log
