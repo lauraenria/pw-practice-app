@@ -57,7 +57,7 @@ test('without destructuring', async (fixtures) => {
 
 ---
 
-✅ **Summary:**
+**Summary:**
 `page` is not a magical keyword — it’s a **fixture property**.
 Playwright injects an object with all fixtures into your test, and `{ page }` is just JavaScript object destructuring to pull out the `page` property.
 
@@ -136,8 +136,170 @@ Instead, it passes fixtures explicitly into your test function. This makes your 
 
 ---
 
-✅ **So:**
+**So:**
 
 * `fixtures.page` *is* real, but only as a property of the object Playwright passes into your test function.
 * Outside of a test callback, it doesn’t exist.
 
+&nbsp;
+
+# 🎭 Playwright Locator Syntax Examples & Cheat Sheet
+
+## Code Example
+
+```ts
+import { test } from '@playwright/test'
+
+test.beforeEach(async ({ page }) => {
+    await page.goto('http://localhost:4200/')
+    await page.getByText('Forms').click()
+    await page.getByText('Form Layouts').click()
+})
+
+test('Locator syntax rules', async ({ page }) => {
+    // by Tag name (args: a string and an obj for different options)
+    page.locator("input")
+
+    // by ID
+    page.locator('#inputEmail1')
+
+    // by Class value
+    page.locator(".shape-rectangle")
+
+    // by attribute
+    page.locator('[placeholder="Email"]')
+
+    // by Class value (full)
+    page.locator('[class="input-full-width size-medium status-basic shape-rectangle nb-transition"]')
+
+    // combine different selectors
+    page.locator('input [placeholder="Email"][nbinput]')
+
+    // by XPath (NOT RECOMMENDED)
+    page.locator('//*[@id="inputEmail1"]')
+
+    // by partial text match
+    page.locator(':text("Using")')
+
+    // by exact text match
+    page.locator(':text-is("Using the Grid")')
+})
+````
+
+## 📌 Locator Syntax Cheat Sheet
+
+| Locator Type                     | Syntax                                     | Example / Notes                                                                                     |
+| -------------------------------- | ------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| **By Tag name**                  | `page.locator("tag")`                      | `page.locator("input")`                                                                             |
+| **By ID**                        | `page.locator("#id")`                      | `page.locator("#inputEmail1")`                                                                      |
+| **By Class (single)**            | `page.locator(".className")`               | `page.locator(".shape-rectangle")`                                                                  |
+| **By Attribute**                 | `page.locator('[attr="value"]')`           | `page.locator('[placeholder="Email"]')`                                                             |
+| **By Full Class Value**          | `page.locator('[class="..."]')`            | `page.locator('[class="input-full-width size-medium status-basic shape-rectangle nb-transition"]')` |
+| **By Combined Selectors**        | `page.locator('tag [attr] [anotherAttr]')` | `page.locator('input [placeholder="Email"] [nbinput]')`                                             |
+| **By XPath** (❌ not recommended) | `page.locator('//xpath')`                  | `page.locator('//*[@id="inputEmail1"]')`                                                            |
+| **By Partial Text**              | `page.locator(':text("partial")')`         | `page.locator(':text("Using")')`                                                                    |
+| **By Exact Text**                | `page.locator(':text-is("exact text")')`   | `page.locator(':text-is("Using the Grid")')`                                                        |
+
+---
+
+🔹 **Important Notes:**
+
+* `locator()` → does **not** return a *Promise*, it returns a Locator object.
+* Methods like `click()`, `fill()`, `type()` → return a *Promise*, so they must be awaited with `await`.
+```ts
+    page.locator("input") // does not return a promise
+    
+    await page.locator("input").click() // return a promise
+```
+* Avoid **XPath**: Playwright supports more robust and readable selectors.
+
+&nbsp;
+
+## 🧑‍💻 User-facing locators in Playwright
+
+Playwright provides different ways to locate elements that are **visible and meaningful to the user**.  
+Here’s a test example showing the most common locator strategies:
+
+```ts
+import { test } from '@playwright/test';
+
+test('User facing locators', async ({ page }) => {
+  // By role + accessible name
+  await page.getByRole('textbox', { name: 'Email' }).first().click();
+  await page.getByRole('button', { name: 'Sign in' }).first().click();
+
+  // By label (associated with an input)
+  await page.getByLabel('Email').first().click();
+
+  // By placeholder text
+  await page.getByPlaceholder('Jane Doe').click();
+
+  // By visible text
+  await page.getByText('Using the Grid').click();
+
+  // By test id
+  await page.getByTestId('SignIn').click();
+
+  // By title attribute
+  await page.getByTitle('IoT Dashboard').click();
+});
+````
+
+👉 Use **user-facing locators** whenever possible (`getByRole`, `getByLabel`, `getByText`),
+and keep `getByTestId` as a fallback when no semantic locator is available.
+
+&nbsp;
+
+## 🔎 Using `data-testid` in Playwright
+
+### Example HTML snippet
+
+```html
+<div class="form-group row">
+  <div class="offset-sm-3 col-sm-9">
+    <button data-testid="SignIn"
+            type="submit"
+            nbButton
+            status="primary">
+      Sign_in
+    </button>
+  </div>
+</div>
+````
+
+
+### What is `data-testid`?
+
+* `data-testid` is a **custom HTML attribute** used only for testing purposes.
+* It does **not affect rendering** or the application itself.
+* Its purpose is to provide a **stable selector** that will not break when classes, styles, or IDs change.
+* It is widely used in Playwright, Testing Library, and Cypress.
+
+
+### Playwright Example
+
+```ts
+import { test, expect } from '@playwright/test';
+
+test('login button works', async ({ page }) => {
+  await page.goto('http://localhost:4200/');
+
+  // Locate button by test id
+  const signInButton = page.getByTestId('SignIn');
+
+  await expect(signInButton).toBeVisible();
+  await signInButton.click();
+});
+```
+
+👉 `page.getByTestId('SignIn')` directly matches `data-testid="SignIn"` in the HTML.
+
+
+### 📌 Best Practices
+
+* ✅ Prefer **semantic locators** (`getByRole`, `getByLabel`, `getByText`) when possible.
+* ✅ Use `data-testid` only when semantic locators are not available (e.g., custom UI components, icons).
+* 🚫 Avoid CSS selectors or IDs — they are likely to change during UI refactoring.
+* 🚫 Do not overuse `data-testid`; keep it as a **fallback** strategy.
+
+&nbsp;
