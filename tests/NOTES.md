@@ -303,3 +303,58 @@ test('login button works', async ({ page }) => {
 * 🚫 Do not overuse `data-testid`; keep it as a **fallback** strategy.
 
 &nbsp;
+
+## 📌 Extracting Values in Playwright
+
+When working with elements on a web page, Playwright provides different methods
+depending on what you want to retrieve:
+
+| Method              | Description                                                                 | Example                                                                 |
+|---------------------|-----------------------------------------------------------------------------|-------------------------------------------------------------------------|
+| `.textContent()`    | Gets the text of a **single element**.                                      | `await page.locator('button').textContent()` → `"Submit"`              |
+| `.allTextContents()`| Gets the text of **all matching elements** (returns an array of strings).   | `await page.locator('nb-radio').allTextContents()` → `["Option 1", "Option 2"]` |
+| `.inputValue()`     | Gets the **value property** of an input field (not text content).           | `await page.getByRole('textbox').inputValue()` → `"test@test.com"`     |
+| `.getAttribute()`   | Gets the value of a specific **attribute** of an element.                   | `await page.getByRole('textbox').getAttribute('placeholder')` → `"Email"` |
+
+#### RECAP
+
+- If you want to grab a single text from a web page element, use the method `.textContent()`.
+  - If you want to grab all text elements from a list of web elements (for example, radio buttons),
+    use the method `.allTextContents()`.
+  - If you want to get the property of an input field (for example, its value), which is not text content,
+    use the method `.inputValue()`.
+  - If you want to get the value of any attribute on the web page, use the method `.getAttribute()`.
+    As an argument, provide the name of the attribute and you will get the value of that particular attribute.
+
+### Example Test
+
+```ts
+test.only('extracting values', async ({ page }) => {
+  // Locate the Basic form card
+  const basicForm = page.locator('nb-card').filter({ hasText: 'Basic form' });
+
+  // 1. Single text value
+  // .textContent() → gets the text of a single element
+  const buttonText = await basicForm.locator('button').textContent();
+  expect(buttonText).toEqual('Submit');
+
+  // 2. All text values
+  // .allTextContents() → gets the text of all matching elements (returns an array)
+  const allRadioButtonsLabels = await page.locator('nb-radio').allTextContents();
+  expect(allRadioButtonsLabels).toContain('Option 1');
+
+  // 3. Input value
+  // .inputValue() → gets the value property of an input field (not the text content)
+  const emailField = basicForm.getByRole('textbox', { name: 'Email' });
+  await emailField.fill('test@test.com');
+  const emailValue = await emailField.inputValue();
+  expect(emailValue).toEqual('test@test.com');
+
+  // 4. Attribute value
+  // .getAttribute() → gets the value of a specific attribute
+  const placeholderValue = await emailField.getAttribute('placeholder');
+  expect(placeholderValue).toEqual('Email');
+});
+```
+
+&nbsp;
